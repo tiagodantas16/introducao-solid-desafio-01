@@ -1,0 +1,261 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "name": "Desafio 02 - Chapter II",
+    "description": "API for creating users: Default and Admin",
+    "version": "1.0.0",
+    "contact": {
+      "email": "tiago.dantas16@live.com"
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create new user",
+        "description": "Route destined to create a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+
+                  "name": "Tiago Pereira Dantas",
+                  "email": "tiago.dantas16@live.com"
+                }
+              }
+            }
+          }
+        },
+        "required": true,
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "date"
+                    },
+                    "updated_at": {
+                      "type": "date"
+                    }
+                  },
+                  "example": {
+                    "admin": false,
+                    "id": "bbadabd9-97c2-45f0-bc51-63b32948f989",  
+                    "name": "Tiago Pereira Dantas",
+                    "email": "tiago.dantas16@live.com",
+                    "created_at": "2021-11-02T05:20:47.785Z",
+                    "updated_at": "2021-11-02T05:20:47.785Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error creating user",
+            "content": {
+              "application/json": {
+                "schema": {  
+                  "example": {
+                    "message": "This email is already in user"
+                  }
+                }
+              }
+            }
+          }    
+        }
+      },
+      "get": {
+        "tags": ["Users"],
+        "summary": "List all users",
+        "description": "Only admin user can access",
+        "parameters": [{
+          "name": "user_id",
+          "in": "header",
+          "description": "Admin user_id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuidV4"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "admin": false,
+                      "id": "bbadabd9-97c2-45f0-bc51-63b32948f989",  
+                      "name": "Tiago Pereira Dantas",
+                      "email": "tiago.dantas16@live.com",
+                      "created_at": "2021-11-02T05:20:47.785Z",
+                      "updated_at": "2021-11-02T05:20:47.785Z"
+                    },
+                    {
+                      "admin": true,
+                      "id": "bbddab89-97c2-45f0-bc51-63b32948f109",  
+                      "name": "Diego Pereira Dantas",
+                      "email": "diego.dantas16@live.com",
+                      "created_at": "2021-11-02T05:20:47.785Z",
+                      "updated_at": "2021-11-02T05:20:47.785Z"
+                    } 
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "example": {
+                    "message": "User does not have privileges"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "example": {
+                    "message": "User not exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Returns a specific user",
+        "parameters": [{
+          "name": "user_id",
+          "in": "path",
+          "description": "Query any user",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuidV4"
+          },
+          "style": "simple"
+        }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "example": {
+                    "admin": false,
+                    "id": "bbadabd9-97c2-45f0-bc51-63b32948f989",  
+                    "name": "Tiago Pereira Dantas",
+                    "email": "tiago.dantas16@live.com",
+                    "created_at": "2021-11-02T05:20:47.785Z",
+                    "updated_at": "2021-11-02T05:20:47.785Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "User not exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "make admin a user",
+        "parameters": [{
+          "name": "user_id",
+          "in": "path",
+          "description": "allows to make a profile in admin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuidV4"
+          },
+          "style": "simple"
+        }],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "example": {
+                    "admin": true,
+                    "id": "bbddab89-97c2-45f0-bc51-63b32948f109",  
+                    "name": "Diego Pereira Dantas",
+                    "email": "diego.dantas16@live.com",
+                    "created_at": "2021-11-02T05:20:47.785Z",
+                    "updated_at": "2021-11-02T05:20:47.785Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "example": {
+                    "message": "Error changing this profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
